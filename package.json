@@ -19,7 +19,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "test": "vitest",
+    "test": "vitest run",
+    "test-watch": "vitest run --watch",
     "prepare": "husky install",
     "commit": "better-commits",
     "branch": "better-branch"
