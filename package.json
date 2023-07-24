@@ -1,7 +1,7 @@
 {
-  "name": "http-please",
+  "name": "@nanotime/http-please",
   "private": false,
-  "version": "0.0.0",
+  "version": "0.0.0-development",
   "type": "module",
   "main": "./dist/http-please.umd.cjs",
   "module": "./dist/http-please.js",
@@ -20,10 +20,11 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest run",
-    "test-watch": "vitest run --watch",
+    "test-watch": "vitest",
     "prepare": "husky install",
     "commit": "better-commits",
-    "branch": "better-branch"
+    "branch": "better-branch",
+    "semantic-release": "semantic-release"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.6.6",
@@ -38,6 +39,8 @@
     "husky": "^8.0.0",
     "lint-staged": "^13.2.3",
     "prettier": "^3.0.0",
+    "semantic-release": "^21.0.7",
+    "semantic-release-cli": "^5.4.4",
     "typescript": "^5.0.2",
     "vite": "^4.4.0",
     "vite-plugin-dts": "^3.3.0",
@@ -45,5 +48,21 @@
   },
   "lint-staged": {
     "*.js": "eslint --cache --fix"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nanotime/http-please.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nanotime/http-please/issues"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ]
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
