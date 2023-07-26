@@ -56,13 +56,5 @@
   },
   "bugs": {
     "url": "https://github.com/nanotime/http-please/issues"
-  },
-  "release": {
-    "branches": [
-      "main"
-    ]
-  },
-  "publishConfig": {
-    "access": "public"
   }
 }
