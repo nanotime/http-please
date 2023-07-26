@@ -1,13 +1,8 @@
 name: Release
 
-# permissions:
-#   contents: read
-#   pages: write
-#   id-token: write
-
 on:
   workflow_run:
-    workflows: ['Snyk Security Check', 'Tests']
+    workflows: ['Snyk Security Check']
     branches: [main]
     types:
       - completed
@@ -17,7 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      # Setup .npmrc file to publish to npm
       - uses: actions/setup-node@v3
         with:
           node-version: '18.x'
