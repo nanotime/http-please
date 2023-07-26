@@ -13,14 +13,20 @@ interface MethodParams {
   body?: unknown;
 }
 
-export default class HttpPlease {
+export class HttpPlease {
   url: URL;
   options?: RequestInit;
 
   constructor({ url, options }: HttpPleaseOptions) {
     // Can't specify method in options
     delete options?.method;
-    this.url = new URL(url);
+
+    try {
+      this.url = new URL(url);
+    } catch (error) {
+      throw new Error('The provided url is invalid');
+    }
+
     this.options = options;
   }
 
