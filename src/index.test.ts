@@ -36,3 +36,11 @@ describe('HttpPlease definitions', () => {
     expect(httpPlease.delete).toBeDefined();
   });
 });
+
+describe('HttpPlease instance', () => {
+  test('Should throw if no url is provided', () => {
+    expect(() => new HttpPlease({ url: '' })).toThrowError(
+      'The provided url is invalid'
+    );
+  });
+});
