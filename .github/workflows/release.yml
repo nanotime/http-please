@@ -1,5 +1,10 @@
 name: Release
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 on:
   workflow_run:
     workflows: ['Snyk Security Check', 'Tests']
@@ -30,7 +35,7 @@ jobs:
         with:
           node-version: 'lts/*'
 
-      - name: Install dependencies
+      - name: Install dependenciesgithub-actions.settings.focus
 
         run: npm ci
 
