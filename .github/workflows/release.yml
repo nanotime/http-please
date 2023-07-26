@@ -1,11 +1,13 @@
 name: Release
 
 on:
-  workflow_run:
-    workflows: ['Snyk Security Check']
-    branches: [main]
-    types:
-      - completed
+  release:
+    types: [created]
+  # workflow_run:
+  # workflows: ['Snyk Security Check']
+  # branches: [main]
+  # types:
+  #   - completed
 
 jobs:
   release:
