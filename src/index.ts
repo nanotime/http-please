@@ -1,1 +1,1 @@
-export { default as HttpPlease } from './http-please';
+export { HttpPlease } from './http-please';
