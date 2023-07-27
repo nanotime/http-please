@@ -4,6 +4,7 @@ import { HttpPlease } from './index';
 
 describe('HttpPlease definitions', () => {
   let httpPlease: HttpPlease;
+
   beforeAll(() => {
     httpPlease = new HttpPlease({ url: 'https://example.com', options: {} });
   });
@@ -14,6 +15,20 @@ describe('HttpPlease definitions', () => {
 
   test('Instance should have a url property', () => {
     expect(httpPlease.url).toBeDefined();
+  });
+
+  test('Instance should have a resolver property', () => {
+    expect(httpPlease.resolver).toBeDefined();
+    expect(httpPlease.resolver).toBe('json');
+  });
+
+  test('Instance should be blob on definition', () => {
+    const instance = new HttpPlease({
+      url: 'https:example.com',
+      resolver: 'blob',
+    });
+    expect(instance.resolver).toBeDefined();
+    expect(instance.resolver).toBe('blob');
   });
 
   test('Instance should have an options property', () => {
@@ -37,7 +52,7 @@ describe('HttpPlease definitions', () => {
   });
 });
 
-describe('HttpPlease instance', () => {
+describe('HttpPlease Error handler', () => {
   test('Should throw if no url is provided', () => {
     expect(() => new HttpPlease({ url: '' })).toThrowError(
       'The provided url is invalid'

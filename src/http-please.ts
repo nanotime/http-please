@@ -1,6 +1,7 @@
 interface HttpPleaseOptions {
   url: string;
   options?: RequestInit;
+  resolver?: 'json' | 'arrayBuffer' | 'blob' | 'formData' | 'text';
 }
 
 interface HttpResponse<Data> extends Response {
@@ -16,8 +17,9 @@ interface MethodParams {
 export class HttpPlease {
   url: URL;
   options?: RequestInit;
+  resolver: 'json' | 'arrayBuffer' | 'blob' | 'formData' | 'text';
 
-  constructor({ url, options }: HttpPleaseOptions) {
+  constructor({ url, options, resolver = 'json' }: HttpPleaseOptions) {
     // Can't specify method in options
     delete options?.method;
 
@@ -28,6 +30,7 @@ export class HttpPlease {
     }
 
     this.options = options;
+    this.resolver = resolver;
   }
 
   async get<Data = unknown>({
@@ -39,7 +42,7 @@ export class HttpPlease {
       method: 'GET',
       ...this.options,
     });
-    response.data = await response.json();
+    response.data = await response[this.resolver]();
 
     return response;
   }
@@ -55,7 +58,7 @@ export class HttpPlease {
       body: JSON.stringify(body),
       ...this.options,
     });
-    response.data = await response.json();
+    response.data = await response[this.resolver]();
 
     return response;
   }
@@ -71,7 +74,7 @@ export class HttpPlease {
       body: JSON.stringify(body),
       ...this.options,
     });
-    response.data = await response.json();
+    response.data = await response[this.resolver]();
 
     return response;
   }
@@ -85,7 +88,7 @@ export class HttpPlease {
       method: 'DELETE',
       ...this.options,
     });
-    response.data = await response.json();
+    response.data = await response[this.resolver]();
 
     return response;
   }
