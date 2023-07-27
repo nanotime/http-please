@@ -1,6 +1,7 @@
 interface HttpPleaseOptions {
   url: string;
   options?: RequestInit;
+  resolver?: 'json' | 'arrayBuffer' | 'blob' | 'formData' | 'text';
 }
 
 interface HttpResponse<Data> extends Response {
@@ -16,8 +17,9 @@ interface MethodParams {
 export class HttpPlease {
   url: URL;
   options?: RequestInit;
+  resolver: 'json' | 'arrayBuffer' | 'blob' | 'formData' | 'text';
 
-  constructor({ url, options }: HttpPleaseOptions) {
+  constructor({ url, options, resolver = 'json' }: HttpPleaseOptions) {
     // Can't specify method in options
     delete options?.method;
 
@@ -28,20 +30,24 @@ export class HttpPlease {
     }
 
     this.options = options;
+    this.resolver = resolver;
   }
 
-  async get<Data>({ path, query }: MethodParams): Promise<HttpResponse<Data>> {
+  async get<Data = unknown>({
+    path,
+    query,
+  }: MethodParams): Promise<HttpResponse<Data>> {
     const formattedUrl = this.formatUrl(path, query);
     const response: HttpResponse<Data> = await fetch(formattedUrl, {
       method: 'GET',
       ...this.options,
     });
-    response.data = await response.json();
+    response.data = await response[this.resolver]();
 
     return response;
   }
 
-  async post<Data>({
+  async post<Data = unknown>({
     path,
     query,
     body,
@@ -52,12 +58,12 @@ export class HttpPlease {
       body: JSON.stringify(body),
       ...this.options,
     });
-    response.data = await response.json();
+    response.data = await response[this.resolver]();
 
     return response;
   }
 
-  async put<Data>({
+  async put<Data = unknown>({
     path,
     query,
     body,
@@ -68,12 +74,12 @@ export class HttpPlease {
       body: JSON.stringify(body),
       ...this.options,
     });
-    response.data = await response.json();
+    response.data = await response[this.resolver]();
 
     return response;
   }
 
-  async delete<Data>({
+  async delete<Data = unknown>({
     path,
     query,
   }: MethodParams): Promise<HttpResponse<Data>> {
@@ -82,7 +88,7 @@ export class HttpPlease {
       method: 'DELETE',
       ...this.options,
     });
-    response.data = await response.json();
+    response.data = await response[this.resolver]();
 
     return response;
   }
