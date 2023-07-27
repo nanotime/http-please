@@ -30,7 +30,10 @@ export class HttpPlease {
     this.options = options;
   }
 
-  async get<Data>({ path, query }: MethodParams): Promise<HttpResponse<Data>> {
+  async get<Data = unknown>({
+    path,
+    query,
+  }: MethodParams): Promise<HttpResponse<Data>> {
     const formattedUrl = this.formatUrl(path, query);
     const response: HttpResponse<Data> = await fetch(formattedUrl, {
       method: 'GET',
@@ -41,7 +44,7 @@ export class HttpPlease {
     return response;
   }
 
-  async post<Data>({
+  async post<Data = unknown>({
     path,
     query,
     body,
@@ -57,7 +60,7 @@ export class HttpPlease {
     return response;
   }
 
-  async put<Data>({
+  async put<Data = unknown>({
     path,
     query,
     body,
@@ -73,7 +76,7 @@ export class HttpPlease {
     return response;
   }
 
-  async delete<Data>({
+  async delete<Data = unknown>({
     path,
     query,
   }: MethodParams): Promise<HttpResponse<Data>> {
