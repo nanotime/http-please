@@ -10,6 +10,7 @@ interface HttpResponse<Data> extends Response {
 
 interface MethodParams {
   path: string;
+  opts?: Omit<RequestInit, 'body' | 'method'>;
   query?: { [key: string]: string };
   body?: unknown;
 }
@@ -20,9 +21,6 @@ export class HttpPlease {
   resolver: 'json' | 'arrayBuffer' | 'blob' | 'formData' | 'text';
 
   constructor({ url, options, resolver = 'json' }: HttpPleaseOptions) {
-    // Can't specify method in options
-    delete options?.method;
-
     try {
       this.url = new URL(url);
     } catch (error) {
@@ -33,14 +31,26 @@ export class HttpPlease {
     this.resolver = resolver;
   }
 
+  async fetch<Data = unknown>(
+    url: string,
+    opts: RequestInit = {}
+  ): Promise<HttpResponse<Data>> {
+    const response: HttpResponse<Data> = await fetch(url, {
+      ...this.options,
+      ...opts,
+    });
+    return response;
+  }
+
   async get<Data = unknown>({
     path,
     query,
+    opts,
   }: MethodParams): Promise<HttpResponse<Data>> {
     const formattedUrl = this.formatUrl(path, query);
-    const response: HttpResponse<Data> = await fetch(formattedUrl, {
+    const response = await this.fetch<Data>(formattedUrl, {
       method: 'GET',
-      ...this.options,
+      ...opts,
     });
     response.data = await response[this.resolver]();
 
@@ -51,12 +61,13 @@ export class HttpPlease {
     path,
     query,
     body,
+    opts,
   }: MethodParams): Promise<HttpResponse<Data>> {
     const formattedUrl = this.formatUrl(path, query);
-    const response: HttpResponse<Data> = await fetch(formattedUrl, {
+    const response = await this.fetch<Data>(formattedUrl, {
       method: 'POST',
       body: JSON.stringify(body),
-      ...this.options,
+      ...opts,
     });
     response.data = await response[this.resolver]();
 
@@ -67,12 +78,13 @@ export class HttpPlease {
     path,
     query,
     body,
+    opts,
   }: MethodParams): Promise<HttpResponse<Data>> {
     const formattedUrl = this.formatUrl(path, query);
-    const response: HttpResponse<Data> = await fetch(formattedUrl, {
+    const response = await this.fetch<Data>(formattedUrl, {
       method: 'PUT',
       body: JSON.stringify(body),
-      ...this.options,
+      ...opts,
     });
     response.data = await response[this.resolver]();
 
@@ -82,11 +94,12 @@ export class HttpPlease {
   async delete<Data = unknown>({
     path,
     query,
+    opts,
   }: MethodParams): Promise<HttpResponse<Data>> {
     const formattedUrl = this.formatUrl(path, query);
-    const response: HttpResponse<Data> = await fetch(formattedUrl, {
+    const response = await this.fetch<Data>(formattedUrl, {
       method: 'DELETE',
-      ...this.options,
+      ...opts,
     });
     response.data = await response[this.resolver]();
 

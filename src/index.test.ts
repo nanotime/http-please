@@ -35,6 +35,10 @@ describe('HttpPlease definitions', () => {
     expect(httpPlease.options).toBeDefined();
   });
 
+  test('Instance should have a fetch method', () => {
+    expect(httpPlease.fetch).toBeDefined();
+  });
+
   test('Instance should have a get method', () => {
     expect(httpPlease.get).toBeDefined();
   });
