@@ -11,8 +11,10 @@ import dts from 'vite-plugin-dts';
 export default defineConfig({
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
+      // eslint-disable-next-line no-undef
+      entry: resolve(__dirname, 'src/index.js'),
       name: 'http-please',
+      formats: ['es', 'umd'],
       fileName: 'http-please',
     },
   },
