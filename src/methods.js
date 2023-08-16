@@ -1,4 +1,4 @@
-import { InterceptorManager } from './http-please';
+import { InterceptorManager } from './classes';
 
 export function fetchPlugin() {
   return {

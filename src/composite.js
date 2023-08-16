@@ -5,7 +5,7 @@
  * functionality provided by the plugins.
  */
 
-import { HttpPlease } from './http-please';
+import { HttpPlease } from './classes';
 
 import {
   getPlugin,
@@ -17,28 +17,26 @@ import {
 import { formatUrlPlugin } from './helpers';
 
 /**
- * @typedef {Object} HttpPlese
- * @property {string} url - The base URL for the HTTP requests.
- * @property {Object} options - The configuration options for a fetch request.
- * @property {string} resolver - The resolver function for handling asynchronous operations.
- * @property {Function} fetch - Fetch method
- * @property {Function} get - HTTP get method
- * @property {Function} post - HTTP post method
- * @property {Function} put - HTTP put method
- * @property {Function} delete - HTTP delete method
- * @property {Function} formatUrl - formatUrl method
- */
-
-/**
  * Creates an HTTP client with extended functionality by composing various plugins.
  *
  * @param {Object} options - The configuration options for the HTTP client.
- * @param {string} url - The base URL for the HTTP requests.
- * @param {string} resolver - The resolver function for handling asynchronous operations.
- * @param {Array} plugins - An array of plugins to extend the functionality of the HTTP client.
- * @return {HttpPlease} - The composed HTTP client object.
+ * @prop {string} url - The base URL for the HTTP requests.
+ * @prop {srting} resolver - The resolver function for handling asynchronous operations.
+ * @prop {array} plugins - An array of plugins to extend the functionality of the HTTP client.
+ * @return {Object} - The composed HTTP client object.
+ * @prop fetch - Fetch method
+ * @prop get - HTTP get method
+ * @prop post - HTTP post method
+ * @prop put - HTTP put method
+ * @prop delete - HTTP delete method
+ * @prop formatUrl - formatUrl method
  */
-export function CreateHttpPlease({ options, url, resolver, plugins = [] }) {
+export default function CreateHttpPlease({
+  options,
+  url,
+  resolver,
+  plugins = [],
+}) {
   const http = new HttpPlease({ url, options, resolver, plugins });
 
   const plugs = plugins.reduce((prev, plugin) => {

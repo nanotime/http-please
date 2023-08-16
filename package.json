@@ -3,13 +3,12 @@
   "private": false,
   "version": "0.0.3",
   "type": "module",
-  "main": "./dist/http-please.umd.cjs",
-  "module": "./dist/http-please.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/http-please.js",
-      "require": "./dist/http-please.umd.cjs"
+      "import": "./dist/index.js"
     }
   },
   "files": [
@@ -17,7 +16,7 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "test-watch": "vitest",
