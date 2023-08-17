@@ -5,7 +5,7 @@
 
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
-import dts from 'vite-plugin-dts';
+// import dts from 'vite-plugin-dts';
 
 // https://vitejs.dev/guide/build.html#library-mode
 export default defineConfig({
@@ -18,20 +18,25 @@ export default defineConfig({
       fileName: 'index',
     },
   },
-  plugins: [
-    dts({
-      include: ['src/composite.js'],
-      beforeWriteFile: (filePath, content) => {
-        return {
-          filePath: filePath.replace(
-            // eslint-disable-next-line no-undef
-            'dist/composite.d.ts',
-            'dist/index.d.ts'
-          ),
-          content,
-        };
-      },
-    }),
-  ],
-  test: {},
+  // plugins: [
+  //   dts({
+  //     include: ['src/composite.js'],
+  //     beforeWriteFile: (filePath, content) => {
+  //       return {
+  //         filePath: filePath.replace(
+  //           // eslint-disable-next-line no-undef
+  //           'dist/composite.d.ts',
+  //           'dist/index.d.ts'
+  //         ),
+  //         content,
+  //       };
+  //     },
+  //   }),
+  // ],
+  test: {
+    globals: true,
+    coverage: {
+      provider: 'istanbul',
+    },
+  },
 });

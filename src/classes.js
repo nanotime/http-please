@@ -33,6 +33,10 @@ export class HttpPlease {
       this.#plugins.push(currentMethodName);
     });
   }
+
+  get plugins() {
+    return this.#plugins;
+  }
 }
 
 export class InterceptorManager {
