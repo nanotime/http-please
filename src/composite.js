@@ -20,16 +20,16 @@ import { formatUrlPlugin } from './helpers';
  * Creates an HTTP client with extended functionality by composing various plugins.
  *
  * @param {Object} options - The configuration options for the HTTP client.
- * @prop {string} url - The base URL for the HTTP requests.
- * @prop {srting} resolver - The resolver function for handling asynchronous operations.
- * @prop {array} plugins - An array of plugins to extend the functionality of the HTTP client.
+ * - {string} url - The base URL for the HTTP requests.
+ * - {srting} resolver - The resolver function for handling asynchronous operations.
+ * - {array} plugins - An array of plugins to extend the functionality of the HTTP client.
  * @return {Object} - The composed HTTP client object.
- * @prop fetch - Fetch method
- * @prop get - HTTP get method
- * @prop post - HTTP post method
- * @prop put - HTTP put method
- * @prop delete - HTTP delete method
- * @prop formatUrl - formatUrl method
+ * - fetch - Fetch method
+ * - get - HTTP get method
+ * - post - HTTP post method
+ * - put - HTTP put method
+ * - delete - HTTP delete method
+ * - formatUrl - formatUrl method
  */
 export default function CreateHttpPlease({
   options,

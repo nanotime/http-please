@@ -1,5 +1,5 @@
 import { test, expect, describe } from 'vitest';
-import { formatUrlPlugin } from './helpers.js';
+import { formatUrlPlugin } from '../helpers.js';
 
 describe('formatUrlPlugin', () => {
   const url = new URL('http://example.com');
