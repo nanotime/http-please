@@ -5,34 +5,21 @@
 
 import { resolve } from 'path';
 import { defineConfig } from 'vite';
-// import dts from 'vite-plugin-dts';
 
 // https://vitejs.dev/guide/build.html#library-mode
 export default defineConfig({
   build: {
     lib: {
-      // eslint-disable-next-line no-undef
-      entry: resolve(__dirname, 'src/composite.js'),
       name: 'http-please',
       formats: ['es'],
-      fileName: 'index',
+      entry: {
+        // eslint-disable-next-line no-undef
+        index: resolve(__dirname, './src/composite.js'),
+        // eslint-disable-next-line no-undef
+        plugins: resolve(__dirname, './src/plugins/index.js'),
+      },
     },
   },
-  // plugins: [
-  //   dts({
-  //     include: ['src/composite.js'],
-  //     beforeWriteFile: (filePath, content) => {
-  //       return {
-  //         filePath: filePath.replace(
-  //           // eslint-disable-next-line no-undef
-  //           'dist/composite.d.ts',
-  //           'dist/index.d.ts'
-  //         ),
-  //         content,
-  //       };
-  //     },
-  //   }),
-  // ],
   test: {
     globals: true,
     coverage: {
