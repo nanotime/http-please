@@ -42,13 +42,13 @@ export function getPlugin() {
      *
      * @param {object} params - An object containing the following properties:
      *   - path {string} - The path to retrieve data from.
-     *   - query {object} - Optional query parameters.
      *   - opts {object} - Additional options for the request.
      * @return {Promise<object>} - A promise that resolves to the response object.
      */
-    async get({ path, query, opts }) {
-      const formattedUrl = this.formatUrl(path, query);
-      const response = await this.request(formattedUrl, {
+    async get({ path, opts }) {
+      const pathUrl = new URL(this.url);
+      pathUrl.pathname = path;
+      const response = await this.request(pathUrl, {
         method: 'GET',
         ...opts,
       });
@@ -66,14 +66,14 @@ export function postPlugin() {
      *
      * @param {Object} params - The options object.
      * - path {string} - The path for the request.
-     * - query {object} - The query parameters for the request.
      * - body {object} - The body of the request.
      * - opts {object} - Additional options for the request.
      * @return {Promise<Object>} A promise that resolves to the response object.
      */
-    async post({ path, query, body, opts }) {
-      const formattedUrl = this.formatUrl(path, query);
-      const response = await this.request(formattedUrl, {
+    async post({ path, body, opts }) {
+      const pathUrl = new URL(this.url);
+      pathUrl.pathname = path;
+      const response = await this.request(pathUrl, {
         method: 'POST',
         body: JSON.stringify(body),
         ...opts,
@@ -91,14 +91,14 @@ export function putPlugin() {
      *
      * @param {object} params - An object containing the path, query parameters, request body, and options.
      *   - {string} path - The path for the PUT request.
-     *   - {object} query - The query parameters for the request.
      *   - {object} body - The request body.
      *   - {object} opts - The options for the request.
      * @return {Promise<object>} A Promise that resolves to the response object with the data from the PUT request.
      */
-    async put({ path, query, body, opts }) {
-      const formattedUrl = this.formatUrl(path, query);
-      const response = await this.request(formattedUrl, {
+    async put({ path, body, opts }) {
+      const pathUrl = new URL(this.url);
+      pathUrl.pathname = path;
+      const response = await this.request(pathUrl, {
         method: 'PUT',
         body: JSON.stringify(body),
         ...opts,
@@ -121,9 +121,10 @@ export function deletePlugin() {
      *   - {Object} opts - Additional options for the request.
      * @return {Promise<Object>} A Promise that resolves to the response object.
      */
-    async delete({ path, query, opts }) {
-      const formattedUrl = this.formatUrl(path, query);
-      const response = await this.request(formattedUrl, {
+    async delete({ path, opts }) {
+      const pathUrl = new URL(this.url);
+      pathUrl.pathname = path;
+      const response = await this.request(pathUrl, {
         method: 'DELETE',
         ...opts,
       });

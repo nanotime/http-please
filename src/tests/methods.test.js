@@ -45,7 +45,7 @@ describe('getPlugin', () => {
           json: () => Promise.resolve(data),
         })
       ),
-      formatUrl: vi.fn(() => 'http://example.com' + path),
+      url: new URL('https://example.com'),
       resolver: 'json',
     });
     const result = await get({ path, params });
@@ -68,7 +68,7 @@ describe('postPlugin', () => {
           json: () => Promise.resolve(data),
         })
       ),
-      formatUrl: vi.fn(() => 'http://example.com' + path),
+      url: new URL('https://example.com'),
       resolver: 'json',
     });
     const result = await post({ path, params, body });
@@ -91,7 +91,7 @@ describe('putPlugin', () => {
           json: () => Promise.resolve(data),
         })
       ),
-      formatUrl: vi.fn(() => 'http://example.com' + path),
+      url: new URL('https://example.com'),
       resolver: 'json',
     });
     const result = await put({ path, params, body });
@@ -110,7 +110,7 @@ describe('deletePlugin', () => {
           json: () => Promise.resolve(data),
         })
       ),
-      formatUrl: vi.fn(() => 'http://example.com' + path),
+      url: new URL('https://example.com'),
       resolver: 'json',
     });
     const result = await deleteRequest({ path, params });

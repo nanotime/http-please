@@ -14,7 +14,6 @@ import {
   deletePlugin,
   fetchPlugin,
 } from './methods';
-import { formatUrlPlugin } from './helpers';
 
 /**
  * Creates an HTTP client with extended functionality by composing various plugins.
@@ -50,7 +49,6 @@ export default function CreateHttpPlease({
     ...postPlugin(),
     ...putPlugin(),
     ...deletePlugin(),
-    ...formatUrlPlugin(),
     ...plugs,
   };
 
