@@ -18,16 +18,23 @@ export function fetchPlugin() {
       let promise;
       const reqInter = this.requestInterceptors.get().reverse();
       const resInter = this.responseInterceptors.get();
-      const response = fetch(url, {
-        ...this.options,
-        ...opts,
-      });
+      const dispatchResponse = opts =>
+        fetch(url, {
+          ...this.options,
+          ...opts,
+        });
 
-      const chain = [...reqInter, [response], ...resInter];
+      const chain = [...reqInter, [dispatchResponse, undefined], ...resInter];
+
+      promise = Promise.resolve({
+        url: this.url,
+        resolver: this.resolver,
+        options: { ...this.options, ...opts },
+      });
 
       while (chain.length) {
         const [fulfilled, rejected] = chain.shift();
-        promise = response.then(fulfilled, rejected);
+        promise = promise.then(fulfilled, rejected);
       }
 
       return promise;
@@ -45,14 +52,14 @@ export function getPlugin() {
      *   - opts {object} - Additional options for the request.
      * @return {Promise<object>} - A promise that resolves to the response object.
      */
-    async get({ path, opts }) {
+    async get({ path = '', opts, resolver = '' }) {
       const pathUrl = new URL(this.url);
       pathUrl.pathname = path;
       const response = await this.request(pathUrl, {
         method: 'GET',
         ...opts,
       });
-      response.data = await response[this.resolver]();
+      response.data = await response[resolver ? resolver : this.resolver]();
 
       return response;
     },
@@ -70,7 +77,7 @@ export function postPlugin() {
      * - opts {object} - Additional options for the request.
      * @return {Promise<Object>} A promise that resolves to the response object.
      */
-    async post({ path, body, opts }) {
+    async post({ path = '', body, opts, resolver = '' }) {
       const pathUrl = new URL(this.url);
       pathUrl.pathname = path;
       const response = await this.request(pathUrl, {
@@ -78,7 +85,7 @@ export function postPlugin() {
         body: JSON.stringify(body),
         ...opts,
       });
-      response.data = await response[this.resolver]();
+      response.data = await response[resolver ? resolver : this.resolver]();
       return response;
     },
   };
@@ -95,7 +102,7 @@ export function putPlugin() {
      *   - {object} opts - The options for the request.
      * @return {Promise<object>} A Promise that resolves to the response object with the data from the PUT request.
      */
-    async put({ path, body, opts }) {
+    async put({ path = '', body, opts, resolver = '' }) {
       const pathUrl = new URL(this.url);
       pathUrl.pathname = path;
       const response = await this.request(pathUrl, {
@@ -103,7 +110,7 @@ export function putPlugin() {
         body: JSON.stringify(body),
         ...opts,
       });
-      response.data = await response[this.resolver]();
+      response.data = await response[resolver ? resolver : this.resolver]();
 
       return response;
     },
@@ -121,14 +128,14 @@ export function deletePlugin() {
      *   - {Object} opts - Additional options for the request.
      * @return {Promise<Object>} A Promise that resolves to the response object.
      */
-    async delete({ path, opts }) {
+    async delete({ path = '', opts, resolver = '' }) {
       const pathUrl = new URL(this.url);
       pathUrl.pathname = path;
       const response = await this.request(pathUrl, {
         method: 'DELETE',
         ...opts,
       });
-      response.data = await response[this.resolver]();
+      response.data = await response[resolver ? resolver : this.resolver]();
       return response;
     },
   };
