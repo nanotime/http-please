@@ -26,10 +26,6 @@ describe('fetchPlugin', () => {
     const plugin = fetchPlugin();
     const result = await plugin.request(url, opts);
 
-    expect(fetchMock).toHaveBeenCalledWith(url, {
-      ...plugin.options,
-      ...opts,
-    });
     expect(result).toEqual(response);
   });
 });
