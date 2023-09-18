@@ -5,10 +5,8 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/index.js"
-    },
-    "./plugins": {
-      "import": "./dist/plugins.js"
+      "import": "./dist/index.js",
+      "types": "./dist/types/index.d.ts"
     }
   },
   "files": [
@@ -16,6 +14,7 @@
   ],
   "scripts": {
     "dev": "vite",
+    "clean": "rm -rf dist",
     "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run --coverage",
@@ -28,7 +27,6 @@
   "devDependencies": {
     "@commitlint/cli": "^17.6.6",
     "@commitlint/config-conventional": "^17.6.6",
-    "@types/node": "^20.4.10",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitest/coverage-istanbul": "^0.34.2",
@@ -44,7 +42,7 @@
     "semantic-release-cli": "^5.4.4",
     "typescript": "^5.1.6",
     "vite": "^4.4.0",
-    "vite-plugin-dts": "^3.3.0",
+    "vite-plugin-dts": "^3.5.3",
     "vitest": "^0.33.0"
   },
   "lint-staged": {

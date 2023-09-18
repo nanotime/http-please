@@ -3,8 +3,8 @@
 /// <reference types="vitest" />
 // Configure Vitest (https://vitest.dev/config/)
 
-import { resolve } from 'path';
 import { defineConfig } from 'vite';
+import dts from 'vite-plugin-dts';
 
 // https://vitejs.dev/guide/build.html#library-mode
 export default defineConfig({
@@ -13,13 +13,11 @@ export default defineConfig({
       name: 'http-please',
       formats: ['es'],
       entry: {
-        // eslint-disable-next-line no-undef
-        index: resolve(__dirname, './src/composite.js'),
-        // eslint-disable-next-line no-undef
-        plugins: resolve(__dirname, './src/plugins/index.js'),
+        index: new URL('./src/index.ts', import.meta.url).pathname,
       },
     },
   },
+  plugins: [dts()],
   test: {
     globals: true,
     coverage: {

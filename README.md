@@ -82,11 +82,11 @@
 
 <!-- Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `@nanotime`, `http-please`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description` -->
 
-http-please is a Fetch API wrapper library written in vanilla JS that was born as an educational project to learn how to apply design patterns and build npm packages with all the guarantees you would expect from a production-ready package.
+HttpPlease is a wrapper for Fetch, a TypeScript library that was born as an educational project to learn how to apply design patterns and create NPM packages that are as close to production standards as possible.
 
-The goal is not to create a package used by everyone that dethrones the big ones, but a contained package that is easy to extend where any programmer can contribute and understand more about how this world of libraries works.
+The goal of this project is to deploy a small, personal tool that is easy to use and extend, and in which anyone can contribute.
 
-Oh yes! And it works, you can use it for your personal projects, after all it's fetch...
+Oh yes! And it works, you can use it for your personal projects, after all it's just fetch...
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -125,17 +125,16 @@ npm i -S @nanotime/http-please
 
 ## Usage
 
-Using this library is not different to use any other NPM library, just import it after the install
-and call the compositor:
+Using this library is not different to use any other NPM library, just import it after the install and instance the class:
 
 ```js
 // Import the lib
-import CreateHttpPlease from '@nanotime/http-please';
+import HttpPlease from '@nanotime/http-please';
 
 // Create an instance
-const http = CreateHttpPlease({
+const http = new HttpPlease({
   url: 'http://example.com',
-  options: { ... }
+  options: { ... } // fetch options
 })
 
 // Make a call
@@ -145,11 +144,8 @@ http.get({ path: '/foo' }).then(res => console.log(res.data));
 
 async function getFoo() {
   const response = await http.get({ path: 'foo' });
-  console.log(response);
   return response;
 }
-
-getFoo(); // log response
 ```
 
 _For more examples, please refer to the [Documentation](https://github.com/nanotime/http-please/wiki)_
