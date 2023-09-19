@@ -1,13 +1,19 @@
 type Resolver = 'json' | 'text' | 'blob' | 'arrayBuffer' | 'formData';
+type Query = { [key: string]: string };
 
 type RequestParams = {
   path: string;
+  query?: Query;
   opts?: Omit<RequestInit, 'method' | 'body'>;
   resolver?: Resolver;
 };
 
 type PostRequestParams = RequestParams & { body: unknown };
 
+interface QP {
+  params: Query;
+  url: URL;
+}
 interface HttpPleaseResponse<T = unknown> extends Response {
   data?: T;
 }
@@ -34,10 +40,6 @@ export default class HttpPlease {
 
   /**
    * Sends an asynchronous HTTP request to the specified URL with optional request options.
-   *
-   * @param {string | URL} url - The URL to send the request to.
-   * @param {RequestInit} [opts] - Optional request options.
-   * @return {Promise<Response>} A promise that resolves with the response to the request.
    */
   async request(url: string | URL, opts?: RequestInit) {
     const req = fetch(url, {
@@ -49,15 +51,12 @@ export default class HttpPlease {
 
   /**
    * Sends a GET request to the specified path with the provided body and options.
-   *
-   * @param {Object} - The parameters for the GET request.
-   * @prop {string} param.path - The path for the GET request. Defaults to an empty string.
-   * @prop {string} param.resolver - The resolver function to be used for parsing the response. Defaults to null.
-   * @prop {any} param.opts - Additional options for the GET request. Defaults to null.
-   * @return {Promise} - The response of the GET request.
    */
-  async get<R>({ path = '', resolver, opts }: RequestParams) {
-    const configuredPath = this.pathFactory(path);
+  async get<R>({ path = '', query = {}, resolver, opts }: RequestParams) {
+    const configuredPath = this.queryFactory({
+      params: query,
+      url: this.pathFactory(path),
+    });
     const response: HttpPleaseResponse<R> = await this.request(configuredPath, {
       method: 'GET',
       ...opts,
@@ -68,16 +67,18 @@ export default class HttpPlease {
 
   /**
    * Sends a POST request to the specified path with the provided body and options.
-   *
-   * @param {Object} - The parameters for the POST request.
-   * @prop {string} param.path - The path for the POST request. Defaults to an empty string.
-   * @prop {Function} param.resolver - The resolver function to be used for parsing the response. Defaults to null.
-   * @prop {any} param.opts - Additional options for the POST request. Defaults to null.
-   * @prop {any} param.body - The body of the POST request.
-   * @return {Promise} - The response of the POST request.
    */
-  async post<R>({ path = '', resolver, opts, body }: PostRequestParams) {
-    const configuredPath = this.pathFactory(path);
+  async post<R>({
+    path = '',
+    query = {},
+    resolver,
+    opts,
+    body,
+  }: PostRequestParams) {
+    const configuredPath = this.queryFactory({
+      params: query,
+      url: this.pathFactory(path),
+    });
     const response: HttpPleaseResponse<R> = await this.request(configuredPath, {
       method: 'POST',
       body: JSON.stringify(body),
@@ -89,16 +90,18 @@ export default class HttpPlease {
 
   /**
    * Sends a PUT request to the specified path with the provided body and options.
-   *
-   * @param {Object} - The parameters for the PUT request.
-   * @prop {string} param.path - The path for the PUT request. Defaults to an empty string.
-   * @prop {string} param.resolver - The resolver function to be used for parsing the response. Defaults to null.
-   * @prop {any} param.opts - Additional options for the PUT request. Defaults to null.
-   * @prop {any} param.body - The body of the PUT request.
-   * @return {Promise} - The response of the PUT request.
    */
-  async put<R>({ path = '', resolver, opts, body }: PostRequestParams) {
-    const configuredPath = this.pathFactory(path);
+  async put<R>({
+    path = '',
+    query = {},
+    resolver,
+    opts,
+    body,
+  }: PostRequestParams) {
+    const configuredPath = this.queryFactory({
+      params: query,
+      url: this.pathFactory(path),
+    });
     const response: HttpPleaseResponse<R> = await this.request(configuredPath, {
       method: 'PUT',
       body: JSON.stringify(body),
@@ -111,14 +114,12 @@ export default class HttpPlease {
   /**
    * Sends a DELETE request to the specified path with the provided body and options.
    *
-   * @param {Object} - The parameters for the DELETE request.
-   * @prop {string} param.path - The path for the DELETE request. Defaults to an empty string.
-   * @prop {string} param.resolver - The resolver function to be used for parsing the response. Defaults to null.
-   * @prop {any} param.opts - Additional options for the DELETE request. Defaults to null.
-   * @return {Promise} - The response of the DELETE request.
    */
-  async delete<R>({ path = '', resolver, opts }: RequestParams) {
-    const configuredPath = this.pathFactory(path);
+  async delete<R>({ path = '', query = {}, resolver, opts }: RequestParams) {
+    const configuredPath = this.queryFactory({
+      params: query,
+      url: this.pathFactory(path),
+    });
     const response: HttpPleaseResponse<R> = await this.request(configuredPath, {
       method: 'DELETE',
       ...opts,
@@ -130,25 +131,21 @@ export default class HttpPlease {
   /**
    * Generates a query string by combining the existing search parameters of the URL
    * with the provided parameters.
-   *
-   * @param {Object} params - An object containing key-value pairs of parameters.
-   * @return {Object} - A new object with the updated URL.
    */
-  query(params: { [key: string]: string }) {
+  queryFactory({ params, url }: QP) {
     const entries = Array.from(this.url.searchParams.entries());
-    const query = new URLSearchParams([
-      ...entries,
-      ...Object.entries(params),
-    ]).toString();
+    const query = new URLSearchParams([...entries, ...Object.entries(params)]);
+    const innerUrl = new URL(url);
 
-    return { ...this, url: `${this.url.origin}?${query}` };
+    for (const [key, value] of query) {
+      innerUrl.searchParams.set(key, value);
+    }
+
+    return innerUrl;
   }
 
   /**
    * Creates a new URL by appending the given path to the base URL.
-   *
-   * @param {string} path - The path to be appended to the base URL.
-   * @return {URL} - The new URL object with the appended path.
    */
   pathFactory(path: string) {
     const pathUrl = new URL(this.url);

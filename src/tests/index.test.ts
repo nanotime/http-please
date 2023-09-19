@@ -123,28 +123,48 @@ describe('HttpPlease: http methods', () => {
 });
 
 describe('HttpPlease: query method', () => {
+  const url = 'https://example.com/users';
   let Instance: HttpPlease;
   beforeEach(() => {
     Instance = new HttpPlease({
       options: { headers: { 'Content-Type': 'application/json' } },
-      url: 'https://example.com',
+      url,
       resolver: 'json',
     });
   });
 
   it('should format a URL with emtpy parameters', () => {
-    const result = Instance.query({});
-    expect(result.url).toBe('https://example.com?');
+    const result = Instance.queryFactory({ params: {}, url: new URL(url) });
+    expect(result.href).toBe(url);
   });
 
   it('should format a URL with single parameter', () => {
-    const result = Instance.query({ key: 'value' });
-    expect(result.url).toBe('https://example.com?key=value');
+    const result = Instance.queryFactory({
+      params: { key: 'value' },
+      url: new URL(url),
+    });
+    expect(result.search).toBe('?key=value');
+    expect(result.href).toBe(`${url}?key=value`);
   });
 
   it('should format a URL with multiple parameters', () => {
-    const result = Instance.query({ key1: 'value1', key2: 'value2' });
-    expect(result.url).toBe('https://example.com?key1=value1&key2=value2');
+    const result = Instance.queryFactory({
+      params: { key1: 'value1', key2: 'value2' },
+      url: new URL(url),
+    });
+    expect(result.search).toBe('?key1=value1&key2=value2');
+    expect(result.href).toBe(`${url}?key1=value1&key2=value2`);
+  });
+
+  it('should be called correctly', () => {
+    vi.spyOn(Instance, 'queryFactory');
+
+    Instance.queryFactory({ params: { key: 'value' }, url: new URL(url) });
+    expect(Instance.queryFactory).toHaveBeenCalledOnce();
+    expect(Instance.queryFactory).toHaveBeenCalledWith({
+      params: { key: 'value' },
+      url: new URL(url),
+    });
   });
 });
 
