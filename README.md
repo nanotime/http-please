@@ -32,15 +32,13 @@
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">Http Please</h3>
+<h3 align="center">Http Please!</h3>
 
   <p align="center">
     An Fetch API wrapper writen in vainilla JS
     <br />
-    <!-- <a href="https://github.com/@nanotime/http-please"><strong>Explore the docs »</strong></a> -->
     <br />
     <br />
-    <!-- <a href="https://github.com/@nanotime/http-please">View Demo</a> -->
     ·
     <a href="https://github.com/nanotime/http-please/issues">Report Bug</a>
     ·
@@ -54,23 +52,29 @@
   <ol>
     <li>
       <a href="#about-the-project">About The Project</a>
-      <!-- <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul> -->
     </li>
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <!-- <li><a href="#prerequisites">Prerequisites</a></li> -->
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
+    <li>
+      <a href="#usage">Usage</a>
+      <ul>
+        <li><a href="#basic-usage">Basic Usage</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#api">API</a>
+      <ul>
+        <li><a href="#configuration">Configuration</a></li>
+        <li><a href="#methods">Methods</a></li>
+      </ul>
+    </li>
     <!-- <li><a href="#roadmap">Roadmap</a></li> -->
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
-    <!-- <li><a href="#contact">Contact</a></li> -->
-    <!-- <li><a href="#acknowledgments">Acknowledgments</a></li> -->
   </ol>
 </details>
 
@@ -82,11 +86,9 @@
 
 <!-- Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `@nanotime`, `http-please`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description` -->
 
-HttpPlease is a wrapper for Fetch, a TypeScript library that was born as an educational project to learn how to apply design patterns and create NPM packages that are as close to production standards as possible.
+HttpPlease is a simple and minimalist wrapper for fetch with certain quality of life (QOF) improvements written in TS.
 
-The goal of this project is to deploy a small, personal tool that is easy to use and extend, and in which anyone can contribute.
-
-Oh yes! And it works, you can use it for your personal projects, after all it's just fetch...
+It's easy to use and implement and its really lightweight since it's just a class, so if you are searching for a minimalistic tool here you are.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -107,8 +109,6 @@ Oh yes! And it works, you can use it for your personal projects, after all it's 
 
 ## Getting Started
 
-Let's go, then...
-
 <!-- Using this lib is easiest like:
 
 ```sh
@@ -125,9 +125,11 @@ npm i -S @nanotime/http-please
 
 ## Usage
 
+### Basic Usage
+
 Using this library is not different to use any other NPM library, just import it after the install and instance the class:
 
-```js
+```ts
 // Import the lib
 import HttpPlease from '@nanotime/http-please';
 
@@ -141,30 +143,210 @@ const http = new HttpPlease({
 http.get({ path: '/foo' }).then(res => console.log(res.data));
 
 // It can be done also with async/await
-
 async function getFoo() {
   const response = await http.get({ path: 'foo' });
   return response;
 }
 ```
 
-_For more examples, please refer to the [Documentation](https://github.com/nanotime/http-please/wiki)_
+As you can see, it's not necesary to chain the request/response to the `Response` instance methods like `json` because HttpPlease does it for you, but you can override this whenever you want, keep reading on docs to see how.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## API
+
+### Configuration
+
+```ts
+type Resolver = 'json' | 'text' | 'blob' | 'arrayBuffer' | 'formData';
+
+interface ConstructorProps {
+  url: string;
+  options?: RequestInit;
+  resolver?: Resolver;
+}
+```
+
+The constructor interface exposes just three parameters:
+
+- the URL string
+- the fetch options
+- the resolver
+
+There is no magic here, the only important thing here is how you want to parse your incoming responses, by default HttpPlease make it `json` for all your methods.
+
+```ts
+// This is a more realistic example configuring jsonplaceholder as url endpoint with headers
+const http = new HttpPlease({
+  url: 'https://jsonplaceholder.typicode.com',
+  options: {
+    headers: {
+      'Content-type': 'application/json; charset=UTF-8',
+    },
+  },
+});
+```
+
+### Methods
+
+HttPlease expose the traditional methods for a CRUD: `GET | POST | PUT | DELETE` and give you the possibility to type the response and have total control of your requests.
+
+Also HttpPlease have a raw `request()` method that just return a pure fetch instance, if you want to use it for any purpose.
+
+**The interfaces**
+
+```ts
+type Query = {
+  [key: string]: string;
+};
+
+type RequestParams = {
+  path: string;
+  query?: Query;
+  opts?: Omit<RequestInit, 'method' | 'body'>;
+  resolver?: Resolver;
+};
+
+type PostRequestParams = RequestParams & {
+  body: unknown;
+};
+
+interface QP {
+  params: Query;
+  url: URL;
+}
+
+interface HttpPleaseResponse<T = unknown> extends Response {
+  data?: T;
+}
+```
+
+**HTTP Method definitions**
+
+```ts
+/**
+ * Sends an asynchronous HTTP request to the specified URL with optional request options.
+ */
+request(url: string | URL, opts?: RequestInit): Promise<Response>;
+/**
+ * Sends a GET request to the specified path with the provided body and options.
+ */
+get<R>({ path, query, resolver, opts }: RequestParams): Promise<HttpPleaseResponse<R>>;
+/**
+ * Sends a POST request to the specified path with the provided body and options.
+ */
+post<R>({ path, query, resolver, opts, body }: PostRequestParams): Promise<HttpPleaseResponse<R>>;
+/**
+ * Sends a PUT request to the specified path with the provided body and options.
+ */
+put<R>({ path, query, resolver, opts, body }: PostRequestParams): Promise<HttpPleaseResponse<R>>;
+/**
+ * Sends a DELETE request to the specified path with the provided body and options.
+ *
+ */
+delete<R>({ path, query, resolver, opts }: RequestParams): Promise<HttpPleaseResponse<R>>;
+/**
+ * Generates a query string by combining the existing search parameters of the URL
+ * with the provided parameters.
+ */
+
+```
+
+**Methods anatomy**
+
+Let's use GET as an expample, every method has the same printing.
+
+```ts
+// ...
+
+type Post = {
+  id: number;
+  title: string;
+  body: string;
+  userId: number;
+};
+
+// Get all posts and define the response as a Posts array
+const posts = await http.get<Post[]>({
+  path: '/posts',
+});
+
+// Also you can define the query params as a plain object
+const posts = await http.get<Post[]>({
+  path: '/posts',
+  query: { userId: '1' },
+});
+
+// Change the resolver for this specific call
+// same as fetch().then(res => res.blob()).then(myBlob => ...)
+const blob = await http.get({ path: '/image/person.jpg', resolver: 'blob' });
+
+// Getting something from the server and print the response
+const body = { title: 'Lorem', body: 'Ipsum' };
+const newPost = http.post<Post>({ path: '/posts', body });
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- ROADMAP -->
 <!-- ## Roadmap
 
-- [ ] Feature 1
+<!-- - [ ] Feature 1
 - [ ] Feature 2
 - [ ] Feature 3
     - [ ] Nested Feature
 
-See the [open issues](https://github.com/@nanotime/http-please/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/@nanotime/http-please/issues) for a full list of proposed features (and known issues). -->
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p> -->
+<!-- <p align="right">(<a href="#readme-top">back to top</a>)</p> --> -->
 
 <!-- CONTRIBUTING -->
+
+## Extending
+
+HttpPlease doesn't have any plugin system integrated because it really don't need it. But it doesn't means that you can't extend it.
+
+Since HttpPlease is just a class, extending it is as simple as applying the concept of composition over inheritance. And since it is also written in TS, you only need to create Mixin Classes to be able to extend HttpPlease.
+
+To be able to create these Mixin Classes, HttpPlease exports a constructor type that is already hydrated with its own instance. Therefore, you don't need to worry about anything else other than composing new instances.
+
+So, extending the library is pretty easy, just need to import the constructor and create a mixin like:
+
+```ts
+import HttpPlease, { Constructor } from '@nanotime/http-please'
+
+function LogUrlPlugin<B extends Constructor>(Base: B) {
+  return class extends Base {
+    // Now you can access to all public methods and properties of HttpPlease
+    logUrl() {
+      console.log(this.url);
+      return this;
+    }
+  }
+}
+
+// Compose the instance
+const HttpInstance = LogUrlPlugin(HttpPlease);
+const http = new HttpInstance({
+  // HttpPlease config
+});
+
+http.logUrl().get(...) // logs the URL object and make a get request in the chain.
+```
+
+**Some considerations**
+
+This is a very open way to modify the HttpPlease class that can violates the Open Closed principle, I know that but with a great power comes a great responsability, so here are some important things you need to know about this library:
+
+1. The URL's and everything related is being constructed by the URL class, so all URL's are objects, not strings per se.
+2. This library works on top of inmutability principle so avoid to mutate the state.
+3. The pattern for the functions is the RORO (Receive Object Return Object), so try to keep it for consistency.
+
+With this very basic principles you can compose your own plugins and instances to do whatever you want with HttpPlease.
+
+**Further Reading**
+
+If you want to know more about the Mixin pattern, [This article is great to get in](https://mariusschulz.com/blog/mixin-classes-in-typescript)
 
 ## Contributing
 
