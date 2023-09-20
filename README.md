@@ -29,13 +29,13 @@
 <br />
 <div align="center">
   <a href="https://github.com/@nanotime/http-please">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+    <img src="images/logo.svg" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">Http Please!</h3>
 
   <p align="center">
-    An Fetch API wrapper writen in vainilla JS
+    A minimal and extendable fetch API wrapper.
     <br />
     <br />
     <br />
